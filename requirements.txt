@@ -1,0 +1,6 @@
+yt-dlp
+openai-whisper
+ollama
+python-dotenv
+torch
+setuptools-rust
