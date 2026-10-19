@@ -119,4 +119,3 @@ This project is released under the MIT License. See LICENSE for details.
 
 ---
 
-If you'd like, I can also add a short CLI usage section (examples of flags) or a minimal config example for .env. Let me know which you'd prefer.
