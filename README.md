@@ -1,72 +1,122 @@
 # AI Video Transcriber & Translator 🎥
 
-An automated pipeline that downloads YouTube audio, transcribes it using OpenAI's **Whisper**, and then uses **Ollama (DeepSeek-R1)** to proofread and translate the transcript into multiple `.srt` subtitle files.
-
-## ✨ Features
-* **YouTube Integration**: Automatic audio extraction via `yt-dlp`.
-* **High Accuracy**: Sentence-level splitting for better subtitle timing.
-* **AI Proofreading**: Automatically fixes transcription "hallucinations" or typos using local LLMs.
-* **Multi-language**: Generates separate SRT files for various target languages.
-* **Privacy-First**: Runs entirely locally via Whisper and Ollama.
+An easy, privacy-first pipeline that downloads audio from YouTube, transcribes it with OpenAI's Whisper, then proofreads and translates the transcript locally using an Ollama LLM (for example: deepseek-r1). The project produces time-aligned .srt subtitle files in the original language and in any target languages you configure.
 
 ---
 
-## 🚀 Setup Instructions
+## ✨ Highlights
 
-### 1. Prerequisites
-You must have the following installed on your system:
-* **Python 3.9+**
-* **FFmpeg**: Required for audio processing.
-    * *Windows*: `choco install ffmpeg`
-    * *Mac*: `brew install ffmpeg`
-    * *Linux*: `sudo apt install ffmpeg`
-* **Ollama**: [Download here](https://ollama.com/) and pull your preferred model:
-  ```bash
-  ollama pull deepseek-r1
-2. Installation
-Clone the repository and install the Python dependencies:
+- YouTube integration via yt-dlp for automatic audio extraction.
+- Sentence-level splitting for accurate subtitle timing.
+- Local AI proofreading (reduces transcription errors and hallucinations) using Ollama models.
+- Multi-language output: produces separate .srt files per target language.
+- Privacy-first: everything runs locally — no cloud uploads required.
 
-Bash
-git clone [https://github.com/your-username/repo-name.git](https://github.com/your-username/repo-name.git)
-cd repo-name
+---
+
+## 🚀 Prerequisites
+
+- Python 3.9 or newer
+- FFmpeg (for audio processing)
+  - Windows: choco install ffmpeg
+  - macOS: brew install ffmpeg
+  - Debian/Ubuntu: sudo apt install ffmpeg
+- yt-dlp (or youtube-dl fork) for downloading YouTube audio
+- Ollama: install from https://ollama.com/ and pull a local model such as deepseek-r1
+- Whisper (local): openai/whisper or whisper.cpp binding, depending on your preferred setup
+
+Note: numpy and other Python dependencies are managed in requirements.txt.
+
+---
+
+## 🔧 Installation
+
+1. Clone the repository and enter the project directory:
+
+```bash
+git clone https://github.com/OmarSoudan/AI-video-transcriber-and-translator.git
+cd AI-video-transcriber-and-translator
+```
+
+2. Install Python dependencies:
+
+```bash
 pip install -r requirements.txt
-3. Configuration
-Copy the example environment file and edit it if necessary:
+```
 
-Bash
+3. Pull an Ollama model locally (example):
+
+```bash
+ollama pull deepseek-r1
+```
+
+4. Copy the example environment file and edit if needed:
+
+```bash
 cp .env.example .env
-🛠 Usage
-Run the main script and provide a YouTube URL when prompted:
-
-Bash
-python main.py
-The script will output:
-
-transcription_en.srt (The proofread English version)
-
-transcription_[lang].srt (The translated versions)
-
-📝 License
-MIT License. Feel free to use and modify!
-
+# Edit .env to point to local model names, output folder, languages, etc.
+```
 
 ---
 
-### Pro-Tip for your GitHub Repo:
-Before you `git push`, make sure to create a **.gitignore** file so you don't accidentally upload your large audio files or local environment settings:
+## 💻 Usage
 
-**`.gitignore`**
+Run the main script and provide a YouTube URL (or pass a URL via CLI if implemented):
+
+```bash
+python main.py
+```
+
+Typical outputs:
+- transcription_en.srt — proofread English subtitles
+- transcription_[lang].srt — translated subtitles for each target language
+
+If your repo exposes CLI flags, run `python main.py --help` to see options for input URL, output directory, languages, and verbosity.
+
+---
+
+## 🛠️ Implementation notes
+
+- Audio extraction: yt-dlp downloads audio and FFmpeg converts/extracts the audio stream.
+- Transcription: Whisper performs sentence-level or chunked transcription to improve timing and alignment.
+- Proofreading & translation: a local Ollama model (e.g., deepseek-r1) post-processes the raw transcript to fix errors and produce translations while preserving timestamps.
+- SubRip (.srt) generation: sentence-level segments are written with accurate start/end times for best player compatibility.
+
+---
+
+## 📝 Example .gitignore (recommended)
+
 ```text
 # Python
 __pycache__/
 *.py[cod]
 
-# Environments
+# Virtual environments
 .env
-.venv
-env/
+.venv/
+venv/
 
-# Project Specific
+# Large media & temporary files
 *.mp3
+*.wav
 *.srt
 temp_audio*
+```
+
+---
+
+## 📝 License
+
+This project is released under the MIT License. See LICENSE for details.
+
+---
+
+## 🙋 Pro Tips
+
+- Use a local Ollama model for best privacy and performance; choose one with good natural-language editing behavior for proofreading tasks.
+- When transcribing long videos, increase chunk sizes to reduce model invocation overhead but ensure chunks still respect sentence boundaries for accurate timing.
+- Keep large media files out of version control — add them to .gitignore before committing.
+
+---
+
+If you'd like, I can also add a short CLI usage section (examples of flags) or a minimal config example for .env. Let me know which you'd prefer.
